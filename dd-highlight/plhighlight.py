@@ -31,7 +31,6 @@ from neuron_readExportedGeometry import *
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-import pandas as pd
 from pylab import rcParams
 rcParams['figure.figsize'] = 12.4,12.0
 #%matplotlib inline # For use with Jupyter Notebooks.

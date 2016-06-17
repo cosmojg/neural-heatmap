@@ -32,7 +32,6 @@ from rotanimate import *
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-import pandas as pd
 #%matplotlib inline # For use with Jupyter Notebooks.
 
 

@@ -31,7 +31,6 @@ import os
 sys.path.append(os.path.join(os.path.dirname(os.getcwd()), 'dependencies'))
 from neuron_readExportedGeometry import *
 import matplotlib.pyplot as plt
-import pandas as pd
 #%matplotlib inline
 
 
