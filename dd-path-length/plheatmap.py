@@ -21,10 +21,6 @@
 #  MA 02110-1301, USA. Also, see <http://www.gnu.org/licenses/>.
 
 
-def main(args):
-    return 0
-
-
 # Imports
 import sys
 import os
@@ -168,7 +164,11 @@ def pathplot(hoc, show = True, fs = 20, vmax = 500):
     if show:
         plt.show()
 
+
+def main(args):
+    return 0
+
+
 if __name__ == '__main__':
     import sys
     sys.exit(main(sys.argv))
-
