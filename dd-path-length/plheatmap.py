@@ -50,13 +50,16 @@ def pathhelp():
 pathhelp()
 
 
-def pathcompare(hocs):
+def pathcompare(hocs, width = 0, height = 0):
     # Convert given directory into list of hoc files
     geo = [(hocs + g) for g in os.listdir(hocs)]
     
     # Calculate the size of the comparison chart
-    lwh = int(round(sqrt(len(geo))))
-    print('*Using {} by {} grid.'.format(lwh, lwh))
+    if width <= 0 or height <= 0 or (width * height) < len(geo):
+        width = int(round(sqrt(len(geo))))
+        height = width
+        print('*Please specify a valid width and height for the comparison chart.') 
+    print('*Using {} by {} grid.'.format(width, height))
     
     # Calculate font size
     fs = 10
@@ -71,7 +74,7 @@ def pathcompare(hocs):
 
     # Create comparison chart
     for n, g in enumerate(geo, start = 1):
-        plt.subplot(lwh, lwh, n)
+        plt.subplot(width, height, n)
         pathplot(g, False, fs, vmax)
     plt.suptitle('Heatmaps of Neurons Colored by Path Length', size = fs)
     plt.tight_layout()
