@@ -31,7 +31,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from pylab import rcParams
 rcParams['figure.figsize'] = 12.4,12.0
-#%matplotlib inline # For use with Jupyter Notebooks.
+
 
 # Testing
 thoc = '/home/cosmo/marderlab/test/878_043_GM_scaled.hoc'

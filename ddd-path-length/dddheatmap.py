@@ -30,7 +30,6 @@ from rotanimate import *
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-#%matplotlib inline # For use with Jupyter Notebooks.
 
 
 # Testing
@@ -46,29 +45,29 @@ def pathhelp():
 pathhelp()
 
 
-# Plots the path heat map in 3D.
+# Plot the path heat map in 3D
 def pathplot(hoc, movie='', ms=15, fs=30, lw=2, res=30, invert=True, pkl=''):
 
-    # Initialize figure.
+    # Initialize figure
     fig = plt.figure()
     ax = fig.gca(projection='3d')
 
-    # Convert given hoc file into a geo object.
+    # Convert given hoc file into a geo object
     print('*Building geo object for {}, please wait...'.format(hoc))
     geo = demoReadsilent(hoc)
     print('*Building heatmap for {}, please wait...'.format(hoc))
 
-    # Find the tip segments and their end locations.
+    # Find the tip segments and their end locations
     tips, ends = geo.getTips()
    
-    # Calculate the path distance to each tip.
+    # Calculate the path distance to each tip
     pDF = PathDistanceFinder(geo, geo.soma)
     pdists = [pDF.distanceTo(seg) for seg in tips]
    
-    # Calculate the coordinate position of each tip.
+    # Calculate the coordinate position of each tip
     coords = [tips[i].coordAt(ends[i]) for i in range(len(tips))]
     
-    # Establish color scheme.
+    # Establish color scheme
     ic = 'black'
     if invert:
         ax.set_axis_bgcolor('black')
@@ -81,7 +80,7 @@ def pathplot(hoc, movie='', ms=15, fs=30, lw=2, res=30, invert=True, pkl=''):
         ax.tick_params(axis='x', colors='white')
         ax.tick_params(axis='y', colors='white')
 
-    # Build and plot the neuron skeleton (includes axons).
+    # Build and plot the neuron skeleton (includes axons)
     bpts = []
     for b in geo.branches:
         bpts.append([[n.x, n.y, n.z] for n in b.nodes])
@@ -92,7 +91,7 @@ def pathplot(hoc, movie='', ms=15, fs=30, lw=2, res=30, invert=True, pkl=''):
                     [b[c][2], b[c+1][2]], 
                     color=ic, alpha=0.5, linewidth=lw)
         
-    # Set up the path distance color map with normalized values.
+    # Set up the path distance color map with normalized values
     vmax = max(pdists)
     tfloats = [float(i)/vmax for i in pdists]
     cmap = plt.cm.viridis # viridis > inferno >> jet
@@ -107,8 +106,8 @@ def pathplot(hoc, movie='', ms=15, fs=30, lw=2, res=30, invert=True, pkl=''):
     ax.scatter(geo.soma.nodes[0].x, geo.soma.nodes[0].y, geo.soma.nodes[0].z,
                c = ic, s = 100, edgecolors='face')
 
-    # Create a list of indices ordered from shortest path to longest.
-    pord = list(pdists) # Preserve pdists.
+    # Create a list of indices ordered from shortest path to longest
+    pord = list(pdists) # Preserve pdists
     pind = []
     for p in pord:
         maxind = pord.index(max(pord))
@@ -117,12 +116,12 @@ def pathplot(hoc, movie='', ms=15, fs=30, lw=2, res=30, invert=True, pkl=''):
         pord.remove(pord[maxind+1])
     pind.reverse()
 
-    # Enumerate the paths leading to each tip in a dictionary.
+    # Enumerate the paths leading to each tip in a dictionary
     tipDict = {}
     for d in range(len(tips)):
         tipDict[d] = pDF.pathTo(tips[d])
     
-    # Overlay a tip path skeleton colored by path distance (discludes axons).
+    # Overlay a tip path skeleton colored by path distance (discludes axons)
     for path in pind:
         if path==pind[0]: lw+=0.1
         else:lw+=0.001
@@ -134,7 +133,7 @@ def pathplot(hoc, movie='', ms=15, fs=30, lw=2, res=30, invert=True, pkl=''):
     print('*The maximum linewidth is {}'.format(round(lw, 4)))
     print(lw)
     
-    # Add colorbar.
+    # Add colorbar
     sc = []
     sc.append(plt.scatter([0,0], [0,0], c=[0., 1.], s=0.1,
                           vmin=0, vmax=vmax, cmap=cmap))
@@ -142,7 +141,7 @@ def pathplot(hoc, movie='', ms=15, fs=30, lw=2, res=30, invert=True, pkl=''):
     cbar.ax.yaxis.set_tick_params(color=ic)
     plt.setp(plt.getp(cbar.ax.axes, 'yticklabels'), color='white')
 
-    # Add labels.
+    # Add labels
     ax.set_xlabel('Micrometers', fontsize = fs, color = ic)
     ax.set_ylabel('Micrometers', fontsize = fs, color = ic)
     ax.set_zlabel('Micrometers', fontsize = fs, color = ic)
@@ -159,10 +158,10 @@ def pathplot(hoc, movie='', ms=15, fs=30, lw=2, res=30, invert=True, pkl=''):
         pickle.dump(fig, output)
         output.close()
         
-    # Save the figure as a movie.
+    # Save the figure as a movie
     if movie != '':
 		
-		# Remove whitespace around skeleton for visual appeal.
+		# Remove whitespace around skeleton for visual appeal
         xpts = []
         ypts = []
         zpts = []
@@ -180,7 +179,7 @@ def pathplot(hoc, movie='', ms=15, fs=30, lw=2, res=30, invert=True, pkl=''):
         
         print('*Creating movie for {}, please wait...'.format(hoc))
  
-        # Create an animated gif (delay ms between frames).
+        # Create an animated gif (delay ms between frames)
         if os.path.splitext(movie)[1] == '.gif':
             rotanimate(fig, ax, res, movie, delay=20,
                        width = ms, height = ms)
@@ -190,17 +189,17 @@ def pathplot(hoc, movie='', ms=15, fs=30, lw=2, res=30, invert=True, pkl=''):
             rotanimate(fig, ax, res, movie, fps=8, bitrate=2000,
                        width = ms, height = ms)
  
-        # Create an ogv movie with fps frames per second.
+        # Create an ogv movie with fps frames per second
         if os.path.splitext(movie)[1] == '.ogv':
             rotanimate(fig, ax, res, movie, fps=8,
                        width = ms, height = ms)
         print('*MOVIE COMPLETE - Thank you for your patience.')
 
-    # Display the figure in a new window.
+    # Display the figure in a new window
     fig.show()
     
 
-# Load a saved pickle figure.
+# Load a saved pickle figure
 def pathload(pkl):
     import pickle
     figx = pickle.load(open(pkl + '.pickle', 'rb'))
