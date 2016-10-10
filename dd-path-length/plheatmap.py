@@ -81,12 +81,15 @@ def pathcompare(hocs, width = 0, height = 0):
     plt.show()
 
 
-def pathplot(hoc, show = True, fs = 20, vmax = 500):
+def pathplot(hoc, show = True, save = False, fs = 20, vmax = 500):
+    # Determine the neuron's working name based on its filename
+    name = hoc.split('_s')[0].split('_f')[0].split('.h')[0].split('_r')[0].split('/')[-1]
+
     # Convert given hoc file into a geo object
-    print('*Building geo object for {}, please wait...'.format(hoc))
+    print('*Building geo object for {}, please wait...'.format(name))
     geo = demoReadsilent(hoc)
-    print('*Building heatmap for {}, please wait...'.format(hoc))
-	
+    print('*Building heatmap for {}, please wait...'.format(name))
+    	
     # Find the tip segments and their end locations
     tips, ends = geo.getTips()
    
@@ -110,7 +113,7 @@ def pathplot(hoc, show = True, fs = 20, vmax = 500):
     if show:
         vmax = max(pdists)
     tfloats = [float(i)/vmax for i in pdists]
-    cmap = plt.cm.jet
+    cmap = plt.cm.viridis
     tcolors = cmap(tfloats)
 
     # Plot and color points at tips by path distance
@@ -155,13 +158,20 @@ def pathplot(hoc, show = True, fs = 20, vmax = 500):
     if show:
         plt.xlabel('Micrometers', fontsize=fs)
         plt.ylabel('Micrometers', fontsize=fs)
-        plt.title('Heatmap of Neuron Tips Colored by Path Length', fontsize=fs)
+        plt.title(name + ' Heatmap Colored by Path Length', fontsize=fs)
     else:
         ax.xaxis.set_visible(False)
         ax.yaxis.set_visible(False)
     cbar.set_label("Path Length (um)", fontsize=fs)
+    
+    # Set equal aspect ratio
+    plt.axes().set_aspect('equal', 'datalim')
        
     print('*DONE - Thank you for your patience.')
+    
+    # Save the figure as a PNG image file
+    if save:
+        plt.savefig(str(name) + '.png', bbox_inches='tight')
 
     # Display the figure in a new window
     if show:
